@@ -1,18 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import axios from './axios/axiosConfig';
+import React, { useEffect, useState } from "react";
+import axios from "../axios/axiosConfig";
 
 function VideoList() {
   const [files, setFiles] = useState([]);
 
   useEffect(() => {
     // Replace with your server's API endpoint to retrieve files
-    axios.get('/files')
+    axios
+      .get("/files")
       .then((response) => response.json())
       .then((data) => {
         setFiles(data);
       })
       .catch((error) => {
-        console.error('Error fetching files:', error);
+        console.error("Error fetching files:", error);
       });
   }, []);
 
@@ -37,6 +38,3 @@ function VideoList() {
 }
 
 export default VideoList;
-
-
-

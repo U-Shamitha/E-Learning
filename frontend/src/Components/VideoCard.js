@@ -1,17 +1,18 @@
 import React from 'react';
+import '../css/CourseCard.css'
 
-const VideoCard = (props) => {
-    const blob = new Blob([Int8Array.from(props.video.data.data)], { type: props.video.contentType });
-    const video= window.URL.createObjectURL(blob);
+const VideoCard = ({video}) => {
+    // const blob = new Blob([Int8Array.from(props.video.data.data)], { type: props.video.contentType });
+    // const video= window.URL.createObjectURL(blob);
 
     return (
         <div className="video-card">
             <div className="">
-                <video src={video} controls width={300} />
+                <video src={video.link} controls width={300} />
             </div>
             <div className="video-details">
-                {console.log(props.video.name)}
-                <p>{props.video.name}</p>
+                {console.log(video.name)}
+                <p>{video.name}</p>
                 {/* <p>{course.category}</p> */}
                 {/* <p>{course.duration} months</p> */}
                 {/* <p>{course.description}</p> */}

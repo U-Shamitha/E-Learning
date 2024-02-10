@@ -1,18 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import axios from './axios/axiosConfig';
-import CourseCard from './CourseCard';
+import React, { useState, useEffect } from "react";
+import axios from "../axios/axiosConfig";
+import CourseCard from "./CourseCard";
 
-import './css/CourseCard.css'
-import Loading from './Loading';
+import "../css/CourseCard.css";
+import { useDispatch } from "react-redux";
+import { setActiveTab } from "../redux/userSlice";
 
 function CourseList() {
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
   const [courses, setCourses] = useState([]);
   const [filteredCourses, setFilteredCourses] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const dispatch = useDispatch();
+
   useEffect(() => {
-    axios.get('/courses') // Make a GET request to your backend API
+    dispatch(setActiveTab("home"));
+  });
+
+  useEffect(() => {
+    axios
+      .get("/courses") // Make a GET request to your backend API
       .then((response) => {
         setCourses(response.data);
         setFilteredCourses(response.data);
@@ -21,14 +29,18 @@ function CourseList() {
       .catch((error) => {
         console.error(error);
       });
-
   }, []);
 
   const handleSearch = () => {
     const filteredCourses = courses.filter((course) => {
-      if (course.category.toString().toLowerCase().includes(query.toLowerCase()) || 
-          // course.duration.toString().toLowerCase().includes(query.toLowerCase()) ||
-          course.name.toString().toLowerCase().includes(query.toLowerCase())) {
+      if (
+        course.category
+          .toString()
+          .toLowerCase()
+          .includes(query.toLowerCase()) ||
+        // course.duration.toString().toLowerCase().includes(query.toLowerCase()) ||
+        course.name.toString().toLowerCase().includes(query.toLowerCase())
+      ) {
         return true;
       } else {
         return false;
@@ -36,11 +48,11 @@ function CourseList() {
     });
 
     setFilteredCourses(filteredCourses);
-  }
+  };
 
   return (
     <div>
-      <div className='courseList-header'>
+      <div className="courseList-header">
         <h2>Course List</h2>
         <div className="search-bar">
           <input
@@ -49,15 +61,20 @@ function CourseList() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
-          <button className='search-btn' onClick={handleSearch}>Search</button>
+          <button className="search-btn" onClick={handleSearch}>
+            Search
+          </button>
         </div>
       </div>
-      {!loading ? <div className="courses-grid">
-        {filteredCourses.map((course, index) => (
-          <CourseCard key={index} course={course} />
-        ))}
-      </div> : 'Loading...'
-      }
+      {!loading ? (
+        <div className="courses-grid">
+          {filteredCourses.map((course, index) => (
+            <CourseCard key={index} course={course} />
+          ))}
+        </div>
+      ) : (
+        "Loading..."
+      )}
     </div>
   );
 }

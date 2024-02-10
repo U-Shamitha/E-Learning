@@ -1,34 +1,36 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-import axios from './axios/axiosConfig';
+import axios from "../axios/axiosConfig";
 
-
-import './css/Register.css'
+import "../css/Register.css";
+import { useDispatch } from "react-redux";
+import { fetchUser, setUser } from "../redux/userSlice";
 
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-        const res = await axios.post('/api/login', {email, password});
-        if(res.data.user!=null){
-            localStorage.setItem('currentUser', JSON.stringify(res.data.user))
-        }else{
-            alert(res.data.error);
-        }
-        navigate('/');
-      } catch (error) {
-        console.error(error);
-        alert(error);
+      const res = await axios.post("/api/login", { email, password });
+      if (res.data.user != null) {
+        localStorage.setItem("currentUser", JSON.stringify(res.data.user));
+        dispatch(fetchUser());
+      } else {
+        alert(res.data.error);
       }
-    console.log('Registration submitted:', email, password);
-    console.log('Login submitted:', email, password);
+      navigate("/");
+    } catch (error) {
+      console.error(error);
+      alert(error);
+    }
+    console.log("Registration submitted:", email, password);
+    console.log("Login submitted:", email, password);
   };
 
   return (
@@ -55,7 +57,9 @@ const Login = () => {
             required
           />
         </div>
-        <button className='register-btn' type="submit">Submit</button>
+        <button className="register-btn" type="submit">
+          Submit
+        </button>
       </form>
     </div>
   );

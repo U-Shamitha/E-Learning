@@ -4,7 +4,7 @@ import {Routes, Route, Link} from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faFolder, faHome, faUser, faAdd, faStar } from '@fortawesome/free-solid-svg-icons';
 
-import './css/Home.css';
+import '../css/Home.css';
 
 import Sidebar from './Sidebar';
 import Header from './Header';
@@ -18,6 +18,7 @@ import UserProfile from './UserProfile';
 import UpdateCourse from './UpdateCourse';
 import UpdateProfile from './UpdateProfile';
 import FavouriteCourses from './FavouriteCourses';
+import { useSelector } from 'react-redux';
 
 function Home() {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
@@ -50,7 +51,7 @@ function Home() {
             <Route path="/profile" element={<UserProfile/>}/>
             <Route path="/updateProfile" element={<UpdateProfile/>}/>
             <Route path="/videoList" element={<VideoList/>}/>
-            <Route path="/courseContent" element={<CourseContent course={JSON.parse(localStorage.getItem('selectedCourse'))}/>}/>
+            <Route path="/courseContent" element={<CourseContent/>}/>
           </Routes>
         </div>
       </div>

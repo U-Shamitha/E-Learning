@@ -1,37 +1,44 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-import axios from './axios/axiosConfig';
+import axios from "../axios/axiosConfig";
 
-import './css/Register.css'
+import "../css/Register.css";
+import { useSelector } from "react-redux";
 
 const UpdateProfile = () => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const user = useSelector((state) => state.user.userDetails);
 
   const navigate = useNavigate();
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.append('name', name);
-    formData.append('email', email);
-    formData.append('password', password);
+    formData.append("name", name);
+    formData.append("email", email);
+    formData.append("password", password);
     try {
-        const res = await axios.post(`/updateProfile/${JSON.parse(localStorage.getItem("currentUser"))._id}`, {name: name, email: email, password: password});
-        console.log("res", res.data.user)
-        if(res.data.user!=null){
-            localStorage.setItem('currentUser', JSON.stringify(res.data.user))
-            navigate('/profile');
-        }else{
-            alert("Updation failed");
-        }
-      } catch (error) {
-        console.error(error);
-        alert('Error uploading file.');
+      const res = await axios.post(`/updateProfile/${user._id}`, {
+        name: name,
+        email: email,
+        password: password,
+      });
+      console.log("res", res.data.user);
+      if (res.data.user != null) {
+        localStorage.setItem("currentUser", JSON.stringify(res.data.user));
+        navigate("/profile");
+      } else {
+        alert("Updation failed");
       }
-    console.log('Update submitted:', name, email, password);
+    } catch (error) {
+      console.error(error);
+      alert("Error uploading file.");
+    }
+    console.log("Update submitted:", name, email, password);
   };
 
   return (
@@ -68,7 +75,9 @@ const UpdateProfile = () => {
             required
           />
         </div>
-        <button className="register-btn" type="submit">Submit</button>
+        <button className="register-btn" type="submit">
+          Submit
+        </button>
       </form>
     </div>
   );
