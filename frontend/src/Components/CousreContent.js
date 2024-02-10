@@ -143,7 +143,7 @@ function CourseContent() {
                           <FontAwesomeIcon icon={unstar} /> &nbsp;Remove
                         </button>
                       )}
-                      {course.enrolledStudents.some(
+                      {user && course.enrolledStudents.some(
                         (student) => student.studentId == user._id
                       ) ? (
                         <button
