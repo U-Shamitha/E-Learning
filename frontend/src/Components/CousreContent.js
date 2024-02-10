@@ -37,7 +37,7 @@ function CourseContent() {
       .then((response) => {
         // console.log("selected course", response.data);
         setIsFavourite(
-          user.favouriteCourses.some(
+          user?.favouriteCourses.some(
             (favcourse) => favcourse.courseId == response.data._id
           )
         );

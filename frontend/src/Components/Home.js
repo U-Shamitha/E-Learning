@@ -9,16 +9,15 @@ import '../css/Home.css';
 import Sidebar from './Sidebar';
 import Header from './Header';
 import AddCourse from './AddCourse';
-import CourseList from './CourseList';
 import VideoList from './VideoList';
-import CourseContent from './CousreContent';
 import Login from './Login';
 import Register from './Register';
 import UserProfile from './UserProfile';
 import UpdateCourse from './UpdateCourse';
 import UpdateProfile from './UpdateProfile';
 import FavouriteCourses from './FavouriteCourses';
-import { useSelector } from 'react-redux';
+import CourseContent from './CousreContent';
+import CourseList from './CourseList';
 
 function Home() {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
