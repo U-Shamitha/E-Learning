@@ -12,7 +12,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { faStar as unstar } from "@fortawesome/free-regular-svg-icons";
 import Syllabus from "./Syllabus";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUser } from "../redux/userSlice";
 
 function CourseContent() {
   const [course, setCourse] = useState(null);
@@ -20,24 +21,18 @@ function CourseContent() {
   const [loading, setLoading] = useState(true);
   const [isFavourite, setIsFavourite] = useState(false);
 
-  const { userDetails: user} = useSelector(
-    (state) => state.user
-  );
-
-  const selectedCourse = JSON.parse(localStorage.getItem("selectedCourse"));
-
-  console.log(selectedCourse)
+  const { userDetails: user, selectedCourse} = useSelector((state) => state.user);
 
   const navigate = useNavigate();
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     axios
-      .get(`/courseContent/${selectedCourse}`) // Make a GET request to your backend API
+      .get(`/courseContent/${selectedCourse}`)
       .then((response) => {
         // console.log("selected course", response.data);
-        setIsFavourite(
-          user?.favouriteCourses.some(
+        user && setIsFavourite(
+          user.favouriteCourses.some(
             (favcourse) => favcourse.courseId == response.data._id
           )
         );
@@ -51,7 +46,7 @@ function CourseContent() {
       .catch((error) => {
         console.error(error);
       });
-  }, []);
+  });
 
   const handleAddCourseToFav = () => {
     axios
@@ -60,7 +55,8 @@ function CourseContent() {
       })
       .then((res) => {
         localStorage.setItem("currentUser", JSON.stringify(res.data.user));
-        navigate("/favCourses");
+        dispatch(fetchUser())
+        // navigate("/favCourses");
       })
       .catch((error) => {
         console.log(error);
@@ -75,7 +71,8 @@ function CourseContent() {
       })
       .then((res) => {
         localStorage.setItem("currentUser", JSON.stringify(res.data.user));
-        navigate("/favCourses");
+        // navigate(0);
+        dispatch(fetchUser())
       })
       .catch((error) => {
         console.log(error);
@@ -90,7 +87,7 @@ function CourseContent() {
       })
       .then((res) => {
         localStorage.setItem("currentUser", JSON.stringify(res.data.user));
-        navigate(0);
+        dispatch(fetchUser())
       })
       .catch((error) => {
         console.log(error);

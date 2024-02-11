@@ -16,13 +16,14 @@ const CourseCard = ({ course, updatable }) => {
   const dispatch = useDispatch();
 
   const handleCourseSelection = () => {
-    dispatch(setSelectedCourse(course._id));
     localStorage.setItem("selectedCourse", JSON.stringify(course._id));
+    dispatch(setSelectedCourse(course._id));
     navigate(`/courseContent`);
   };
 
   const handleCourseUpdate = () => {
     localStorage.setItem("selectedCourse", JSON.stringify(course._id));
+    dispatch(setSelectedCourse(course._id));
     navigate(`/updateCourse`);
   };
 

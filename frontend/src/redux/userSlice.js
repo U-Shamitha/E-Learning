@@ -20,6 +20,18 @@ export const fetchUser = createAsyncThunk(
     }
 )
 
+export const fetchSelectedCourse = createAsyncThunk(
+  'user/fetchSelectedCourse',
+  async() =>{
+      try{
+          let data = JSON.parse(localStorage.getItem('selectedCourse'));
+          return data;
+      }catch(error){
+
+      }
+  }
+)
+
 export const setUser = createAsyncThunk(
     'user/setUser',
     async (data) => {
@@ -63,6 +75,16 @@ export const setUser = createAsyncThunk(
             state.isLoading = false;
             state.error = action.error.message;
         })
+        builder.addCase(fetchSelectedCourse.pending, (state)=>{
+          state.isLoading = true;
+      })
+      builder.addCase(fetchSelectedCourse.fulfilled, (state, action)=>{
+          state.selectedCourse = action.payload;
+      })
+      builder.addCase(fetchSelectedCourse.rejected, (state, action)=>{
+          state.isLoading = false;
+          state.error = action.error.message;
+      })
         builder.addCase(setUser.fulfilled, (state, action)=>{
             state.userDetails = action.payload;
         })

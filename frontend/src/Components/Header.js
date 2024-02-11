@@ -3,13 +3,14 @@ import React, { useEffect } from "react";
 import "../css/Header.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUser, setUser } from "../redux/userSlice";
+import { fetchSelectedCourse, fetchUser, setUser } from "../redux/userSlice";
 
 const Header = () => {
   const { userDetails: user } = useSelector((state) => state.user);
 
   useEffect(() => {
     dispatch(fetchUser());
+    dispatch(fetchSelectedCourse());
   }, []);
 
   const navigate = useNavigate();
@@ -18,9 +19,11 @@ const Header = () => {
   // Add an event listener for the "storage" event on the window object
   window.addEventListener("storage", function (e) {
     if (e.key === "currentUser") {
-      navigate(0);
+      // navigate(0);
       dispatch(fetchUser());
       console.log("LocalStorage data changed:", e.newValue);
+    }else if(e.key === "selectedCourse"){
+      dispatch(fetchSelectedCourse());
     }
   });
 
