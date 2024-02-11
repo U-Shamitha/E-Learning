@@ -56,7 +56,7 @@ const UserProfile = () => {
             </div>
           </div>
           <div className="user-courses">
-            <YourCourses userId={user._id} />
+            <YourCourses />
           </div>
         </>
       ) : (

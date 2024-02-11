@@ -3,23 +3,31 @@ import axios from "../axios/axiosConfig";
 import CourseCard from "./CourseCard";
 
 import "../css/CourseCard.css";
+import { useSelector } from "react-redux";
 
-function YourCourses(props) {
+function YourCourses() {
   const [query, setQuery] = useState("");
   const [courses, setCourses] = useState([]);
   const [filteredCourses, setFilteredCourses] = useState([]);
 
+  const user = useSelector((state) => state.user.userDetails);
+
+  console.log("UserProfile", user);
+
   useEffect(() => {
-    axios
-      .get(`/courses/user/${props.userId}`) // Make a GET request to your backend API
-      .then((response) => {
-        setCourses(response.data);
-        setFilteredCourses(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, []);
+    console.log("profile effect" ,user)
+    if(user._id){
+      axios
+        .get(`/courses/user/${user._id}`) // Make a GET request to your backend API
+        .then((response) => {
+          setCourses(response.data);
+          setFilteredCourses(response.data);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+  }, [user]);
 
   const handleSearch = () => {
     const filteredCourses = courses.filter((course) => {
