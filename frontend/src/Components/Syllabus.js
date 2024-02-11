@@ -89,9 +89,8 @@ const Syllabus = ({ syllabus, courseId }) => {
         />
       </div>
       {syllabus.map((item, index) => (
-        <div>
+        <div key={index}>
           <div
-            key={index}
             style={{
               paddingLeft: "15px",
               display: "flex",

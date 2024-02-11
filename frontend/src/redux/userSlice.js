@@ -77,14 +77,14 @@ export const setUser = createAsyncThunk(
         })
         builder.addCase(fetchSelectedCourse.pending, (state)=>{
           state.isLoading = true;
-      })
-      builder.addCase(fetchSelectedCourse.fulfilled, (state, action)=>{
-          state.selectedCourse = action.payload;
-      })
-      builder.addCase(fetchSelectedCourse.rejected, (state, action)=>{
-          state.isLoading = false;
-          state.error = action.error.message;
-      })
+        })
+        builder.addCase(fetchSelectedCourse.fulfilled, (state, action)=>{
+            state.selectedCourse = action.payload;
+        })
+        builder.addCase(fetchSelectedCourse.rejected, (state, action)=>{
+            state.isLoading = false;
+            state.error = action.error.message;
+        })
         builder.addCase(setUser.fulfilled, (state, action)=>{
             state.userDetails = action.payload;
         })

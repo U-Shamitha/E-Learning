@@ -3,7 +3,6 @@ import axios from "../axios/axiosConfig";
 
 import "../css/CourseCard.css";
 import VideoCard from "./VideoCard";
-import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faStar,
@@ -18,45 +17,52 @@ import { fetchUser } from "../redux/userSlice";
 function CourseContent() {
   const [course, setCourse] = useState(null);
   const [image, setImage] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading]= useState(true);
   const [isFavourite, setIsFavourite] = useState(false);
 
-  const { userDetails: user, selectedCourse} = useSelector((state) => state.user);
+  const { userDetails: user} = useSelector((state) => state.user);
+  const selectedCourse = JSON.parse(localStorage.getItem('selectedCourse'));
 
-  const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    axios
-      .get(`/courseContent/${selectedCourse}`)
-      .then((response) => {
-        // console.log("selected course", response.data);
-        user && setIsFavourite(
-          user.favouriteCourses.some(
-            (favcourse) => favcourse.courseId == response.data._id
-          )
-        );
-        const blob = new Blob([Int8Array.from(response.data.image.data.data)], {
-          type: response.data.image.contentType,
+  useEffect(()=>{
+    if(selectedCourse){
+      axios
+        .get(`/courseContent/${selectedCourse}`)
+        .then((response) => {
+          // console.log("selected course", response.data);
+          user?.favouriteCourses && setIsFavourite(user.favouriteCourses.some((favcourse) => favcourse.courseId == response.data._id));
+            const blob = new Blob([Int8Array.from(response.data.image.data.data)], {
+            type: response.data.image.contentType,
+          });
+          setImage(window.URL.createObjectURL(blob));
+          setCourse(response.data);
+          setLoading(false);
+        },[])
+        .catch((error) => {
+          console.error(error);
         });
-        setImage(window.URL.createObjectURL(blob));
-        setCourse(response.data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  });
+      }
+  },[])
 
-  const handleAddCourseToFav = () => {
+  useEffect(()=>{
+    user?.favouriteCourses && setIsFavourite(user.favouriteCourses.some((favcourse) => favcourse.courseId == selectedCourse));
+  },[user])
+
+  const handleAddCourseToFav = (e) => {
+    console.log(e.target);
+    e.target.disabled = true;
+    e.target.style.backgroundColor = '#aaa9a9d5';
+    e.target.style.color = 'grey'
     axios
       .post(`updateUserFav/add/${user._id}`, {
         newFavouriteCourse: { courseId: course._id, courseName: course.name },
       })
-      .then((res) => {
+      .then(async(res) => {
         localStorage.setItem("currentUser", JSON.stringify(res.data.user));
         dispatch(fetchUser())
-        // navigate("/favCourses");
+        e.target.disabled = false;
+        e.target.backgroundColor = '#007bff';
       })
       .catch((error) => {
         console.log(error);
@@ -64,15 +70,21 @@ function CourseContent() {
       });
   };
 
-  const handleRemoveCourseToFav = () => {
+  const handleRemoveCourseToFav = (e) => {
+    console.log(e.target);
+    e.target.disabled = true;
+    e.target.style.backgroundColor = '#aaa9a9d5';
+    e.target.style.color = 'grey'
+    console.log(e.target);
     axios
       .post(`updateUserFav/remove/${user._id}`, {
         newFavouriteCourse: { courseId: course._id, courseName: course.name },
       })
       .then((res) => {
         localStorage.setItem("currentUser", JSON.stringify(res.data.user));
-        // navigate(0);
         dispatch(fetchUser())
+        e.target.disabled = false;
+        e.target.backgroundColor = 'red';
       })
       .catch((error) => {
         console.log(error);
@@ -227,7 +239,7 @@ function CourseContent() {
                     </p>
                     <p style={{ paddingLeft: "15px" }}>
                       {course.prerequisites.map((prerequisite, index) => (
-                        <span>
+                        <span key={index}>
                           {prerequisite}{" "}
                           {index != prerequisite.length - 1 && ","}&nbsp;&nbsp;
                         </span>

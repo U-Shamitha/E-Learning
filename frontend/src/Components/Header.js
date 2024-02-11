@@ -11,21 +11,24 @@ const Header = () => {
   useEffect(() => {
     dispatch(fetchUser());
     dispatch(fetchSelectedCourse());
-  }, []);
+  },[]);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // Add an event listener for the "storage" event on the window object
-  window.addEventListener("storage", function (e) {
-    if (e.key === "currentUser") {
-      // navigate(0);
-      dispatch(fetchUser());
-      console.log("LocalStorage data changed:", e.newValue);
-    }else if(e.key === "selectedCourse"){
-      dispatch(fetchSelectedCourse());
-    }
-  });
+  // // Add an event listener for the "storage" event on the window object
+  // window.addEventListener("storage", function (e) {
+  //   if (e.key === "currentUser") {
+  //     // navigate(0);
+  //     dispatch(fetchUser());
+  //     console.log("LocalStorage data changed:", e.newValue);
+  //   }else if(e.key === "selectedCourse"){
+  //     console.log("LocalStorage data changed:", e.newValue);
+  //     dispatch(fetchSelectedCourse());
+  //   }else{
+  //     console.log("LocalStorage data changed:", e.newValue);
+  //   }
+  // });
 
   return (
     <header>
