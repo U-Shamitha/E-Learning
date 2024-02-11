@@ -31,7 +31,7 @@ function FavouriteCourses(props) {
       .catch((error) => {
         console.error(error);
       });
-  }, []);
+  }, [user]);
 
   const handleSearch = () => {
     const filteredCourses = courses.filter((course) => {
