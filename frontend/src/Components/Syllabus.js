@@ -7,11 +7,15 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import axios from "../axios/axiosConfig";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUser } from "../redux/userSlice";
 
-const Syllabus = ({ syllabus, courseId }) => {
+const Syllabus = ({ syllabus, courseId, isEnrolled }) => {
+  console.log('courseId', courseId);
   const [expandedIndex, setExpandedIndex] = useState(syllabus.map(() => false));
   const [completedWeeks, setCompletedWeeks] = useState([]);
+  const [isEdited, setIsEdited] = useState(false);
+
 
   const user = useSelector((state) => state.user.userDetails);
 
@@ -28,8 +32,10 @@ const Syllabus = ({ syllabus, courseId }) => {
           ?.completedWeeks
       );
     }
-  }, []);
+  }, [user]);
+
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const toggleExpand = (index) => {
     setExpandedIndex((prev) => {
@@ -40,6 +46,7 @@ const Syllabus = ({ syllabus, courseId }) => {
   };
 
   const handleCheckboxChange = (index) => {
+    setIsEdited(true);
     if (completedWeeks.includes(index)) {
       setCompletedWeeks((prev) =>
         prev.filter((weekIndex) => weekIndex !== index)
@@ -50,6 +57,7 @@ const Syllabus = ({ syllabus, courseId }) => {
   };
 
   const handleMarkAsComplete = () => {
+    setIsEdited(true);
     if (completedWeeks.length == syllabus.length) {
       setCompletedWeeks([]);
     } else {
@@ -62,14 +70,17 @@ const Syllabus = ({ syllabus, courseId }) => {
   };
 
   const handleConfirmCourseCompletion = () => {
+    console.log("userId", user._id);
     axios
       .post(
         `/updateCourseCompletionInEnrolledCourses/${user._id}/course/${courseId}`,
         { newCompletedWeeks: completedWeeks }
       )
       .then((res) => {
+        setIsEdited(false);
+        console.log(res.data.user);
         localStorage.setItem("currentUser", JSON.stringify(res.data.user));
-        navigate(0);
+        dispatch(fetchUser());
       })
       .catch((error) => {
         console.log(error);
@@ -81,12 +92,12 @@ const Syllabus = ({ syllabus, courseId }) => {
     <div>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <p style={{ fontWeight: "bold", fontSize: "20px" }}>Syllabus</p>
-        <input
+        {isEnrolled && <input
           type="checkbox"
           checked={completedWeeks?.length == syllabus?.length}
           onChange={handleMarkAsComplete}
           style={{ marginRight: "10px" }}
-        />
+        />}
       </div>
       {syllabus.map((item, index) => (
         <div key={index}>
@@ -115,12 +126,14 @@ const Syllabus = ({ syllabus, courseId }) => {
                 Week{index + 1}: &nbsp; {item.topic}
               </span>
             </div>
-            <input
-              type="checkbox"
-              checked={isWeekComplete(index)}
-              onChange={() => handleCheckboxChange(index)}
-              style={{ marginRight: "10px" }}
-            />
+            {isEnrolled && 
+              <input
+                type="checkbox"
+                checked={isWeekComplete(index)}
+                onChange={() => handleCheckboxChange(index)}
+                style={{ marginRight: "10px" }}
+              />
+            }
           </div>
           {expandedIndex[index] && (
             <div>
@@ -129,25 +142,27 @@ const Syllabus = ({ syllabus, courseId }) => {
           )}
         </div>
       ))}
-      <div style={{ display: "flex", justifyContent: "flex-end" }}>
-        <button
-          className="register-btn"
-          type="button"
-          onClick={handleConfirmCourseCompletion}
-          style={{ margin: "10px" }}
-        >
-          <FontAwesomeIcon icon={faCheck} /> &nbsp;Mark{" "}
-          {completedWeeks.length > 0 && completedWeeks.length == syllabus.length
-            ? "Course "
-            : completedWeeks.map((week, index) => (
-                <span key={index}>
-                  Week{week + 1}
-                  {index !== completedWeeks.length - 1 && ", "}{" "}
-                </span>
-              ))}
-          As Complete
-        </button>
-      </div>
+      {isEnrolled && 
+        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+          <button
+            className="register-btn"
+            type="button"
+            onClick={handleConfirmCourseCompletion}
+            style={{ margin: "10px", backgroundColor: !isEdited ? '#aaa9a9d5' : '', disabled: !isEdited}}
+          >
+            <FontAwesomeIcon icon={faCheck} /> &nbsp;Mark{" "}
+            {completedWeeks.length > 0 && completedWeeks.length == syllabus.length
+              ? "Course "
+              : completedWeeks.map((week, index) => (
+                  <span key={index}>
+                    Week{week + 1}
+                    {index !== completedWeeks.length - 1 && ", "}{" "}
+                  </span>
+                ))}
+            As Complete
+          </button>
+        </div>
+      }
     </div>
   );
 };

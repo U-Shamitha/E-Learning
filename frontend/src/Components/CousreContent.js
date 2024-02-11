@@ -19,6 +19,7 @@ function CourseContent() {
   const [image, setImage] = useState(null);
   const [loading, setLoading]= useState(true);
   const [isFavourite, setIsFavourite] = useState(false);
+  const [isEnrolled, setIsEnrolled] = useState(false);
 
   const { userDetails: user} = useSelector((state) => state.user);
   const selectedCourse = JSON.parse(localStorage.getItem('selectedCourse'));
@@ -47,7 +48,11 @@ function CourseContent() {
 
   useEffect(()=>{
     user?.favouriteCourses && setIsFavourite(user.favouriteCourses.some((favcourse) => favcourse.courseId == selectedCourse));
-  },[user])
+    user?.enrolledCourses && course && setIsEnrolled(
+      user.enrolledCourses.some((enrolledCourse) => enrolledCourse.courseId == course._id)
+    )
+  }
+  ,[user, course])
 
   const handleAddCourseToFav = (e) => {
     console.log(e.target);
@@ -62,7 +67,7 @@ function CourseContent() {
         localStorage.setItem("currentUser", JSON.stringify(res.data.user));
         dispatch(fetchUser())
         e.target.disabled = false;
-        e.target.backgroundColor = '#007bff';
+        e.target.backgroundColor = '';
       })
       .catch((error) => {
         console.log(error);
@@ -84,7 +89,7 @@ function CourseContent() {
         localStorage.setItem("currentUser", JSON.stringify(res.data.user));
         dispatch(fetchUser())
         e.target.disabled = false;
-        e.target.backgroundColor = 'red';
+        e.target.backgroundColor = '';
       })
       .catch((error) => {
         console.log(error);
@@ -92,12 +97,18 @@ function CourseContent() {
       });
   };
 
-  const handleEnrollCourse = () => {
+  const handleEnrollCourse = (e) => {
+    e.target.disabled = true;
+    e.target.style.backgroundColor = '#aaa9a9d5';
+    e.target.style.color = 'grey'
     axios
       .post(`updateUserEnrolledCourses/add/${user._id}`, {
         newEnrolledCourse: { courseId: course._id, courseName: course.name },
       })
       .then((res) => {
+        e.target.disabled = false;
+        e.target.style.backgroundColor = '';
+        e.target.style.color = '';
         localStorage.setItem("currentUser", JSON.stringify(res.data.user));
         dispatch(fetchUser())
       })
@@ -152,9 +163,7 @@ function CourseContent() {
                           <FontAwesomeIcon icon={unstar} /> &nbsp;Remove
                         </button>
                       )}
-                      {user && course.enrolledStudents.some(
-                        (student) => student.studentId == user._id
-                      ) ? (
+                      {isEnrolled ? (
                         <button
                           className="register-btn"
                           type="button"
@@ -248,7 +257,7 @@ function CourseContent() {
                   </div>
 
                   {/* Syllabus */}
-                  <Syllabus syllabus={course.syllabus} courseId={course._id} />
+                  <Syllabus syllabus={course.syllabus} courseId={course._id} isEnrolled={isEnrolled}/>
 
                   {/* Description */}
                   <div>
