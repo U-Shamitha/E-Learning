@@ -150,7 +150,7 @@ function CourseContent() {
                           onClick={handleAddCourseToFav}
                           style={{ width: "45%" }}
                         >
-                          <FontAwesomeIcon icon={faStar} /> &nbsp;Add
+                          <FontAwesomeIcon icon={faStar} pointerEvents='none'/> &nbsp;Add
                         </button>
                       )}
                       {user && isFavourite && (
@@ -160,7 +160,7 @@ function CourseContent() {
                           onClick={handleRemoveCourseToFav}
                           style={{ backgroundColor: "red", width: "45%" }}
                         >
-                          <FontAwesomeIcon icon={unstar} /> &nbsp;Remove
+                          <FontAwesomeIcon icon={unstar} pointerEvents='none' /> &nbsp;Remove
                         </button>
                       )}
                       {isEnrolled ? (
@@ -169,7 +169,7 @@ function CourseContent() {
                           type="button"
                           style={{ backgroundColor: "green" }}
                         >
-                          <FontAwesomeIcon icon={faUserCheck} /> &nbsp;Enrolled
+                          <FontAwesomeIcon icon={faUserCheck} pointerEvents='none'/> &nbsp;Enrolled
                         </button>
                       ) : (
                         <button
@@ -177,7 +177,7 @@ function CourseContent() {
                           type="button"
                           onClick={handleEnrollCourse}
                         >
-                          <FontAwesomeIcon icon={faUserPlus} /> &nbsp;Enroll
+                          <FontAwesomeIcon icon={faUserPlus} pointerEvents='none'/> &nbsp;Enroll
                         </button>
                       )}
                     </div>
